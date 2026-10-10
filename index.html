@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Projector Wall</title>
+<script>
+  // Cache-bust so a plain refresh always picks up the latest push to GitHub.
+  window.__v = Date.now();
+  document.write('<link rel="stylesheet" href="style.css?v=' + __v + '">');
+</script>
+</head>
+<body>
+<div id="stage"><div id="grid" hidden></div></div>
+<div id="hud" hidden></div>
+<div id="toolbar" hidden>
+  <button id="fullscreen" type="button" title="Fullscreen (F)">⛶ Fullscreen (F)</button>
+  <button id="undo" type="button" title="Undo (Ctrl+Z)">↶ Undo</button>
+</div>
+<script>
+  document.write('<script src="config.js?v=' + __v + '"><\/script>');
+  document.write('<script src="app.js?v=' + __v + '"><\/script>');
+</script>
+</body>
+</html>

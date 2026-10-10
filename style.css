@@ -1,0 +1,160 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  cursor: none;
+  user-select: none;
+}
+body.editing, body.mouse-active { cursor: default; }
+
+#stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  overflow: visible; /* zones may extend past the stage, all the way to the screen edge */
+  background: #000;
+}
+
+.zone {
+  position: absolute;
+  overflow: hidden;
+  transform-origin: 0 0;
+}
+
+.content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  overflow: hidden;
+}
+
+/* Placeholder: animated stripes so you can see zones before media exists */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #fff;
+  font: 600 32px/1.2 system-ui, sans-serif;
+  text-align: center;
+  text-shadow: 0 2px 8px #000;
+  background: repeating-linear-gradient(45deg,
+    var(--c) 0 20px,
+    color-mix(in srgb, var(--c) 65%, #000) 20px 40px);
+  animation: stripes 2s linear infinite;
+}
+@keyframes stripes { to { background-position: 56.57px 0; } }
+
+/* ---------- edit mode ---------- */
+.edit-ui {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  outline: 2px dashed #0ff;
+  outline-offset: -2px;
+  cursor: move;
+}
+body.editing .edit-ui { display: block; }
+.zone.selected .edit-ui { outline: 3px solid #ff0; background: #ff02; }
+
+.edit-ui .label {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  padding: 2px 6px;
+  font: 16px/1.3 ui-monospace, Consolas, monospace;
+  color: #0ff;
+  background: #000c;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.zone.selected .edit-ui .label { color: #ff0; }
+
+.edit-ui .resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  background: #0ff;
+  cursor: nwse-resize;
+}
+
+.edit-ui .warp {
+  display: none;
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f0f;
+  box-shadow: 0 0 0 2px #000;
+  cursor: crosshair;
+}
+.zone.selected .edit-ui .warp { display: block; }
+.zone.selected .edit-ui .resize { right: 32px; }
+.warp[data-corner="0"] { left: 0; top: 0; }
+.warp[data-corner="1"] { right: 0; top: 0; }
+.warp[data-corner="2"] { right: 0; bottom: 0; }
+.warp[data-corner="3"] { left: 0; bottom: 0; }
+
+#grid {
+  position: absolute;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  background-image:
+    linear-gradient(#fff5 1px, transparent 1px),
+    linear-gradient(90deg, #fff5 1px, transparent 1px);
+  background-size: 100px 100px;
+  outline: 3px solid #0f0;
+  outline-offset: -3px;
+}
+
+#hud {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 200000;
+  max-width: calc(100vw - 48px);
+  padding: 10px 14px;
+  font: 13px/1.5 ui-monospace, Consolas, monospace;
+  color: #eee;
+  background: #000d;
+  border: 1px solid #444;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+#hud b { color: #ff0; font-weight: normal; }
+
+#toolbar {
+  position: fixed;
+  right: 12px;
+  top: 12px;
+  z-index: 200000;
+  display: flex;
+  gap: 8px;
+}
+#toolbar[hidden] { display: none; }
+#toolbar button[hidden] { display: none; }
+#toolbar button {
+  padding: 8px 16px;
+  font: 15px ui-monospace, Consolas, monospace;
+  color: #ff0;
+  background: #000d;
+  border: 1px solid #ff0;
+  cursor: pointer;
+}
+#toolbar button:disabled {
+  color: #666;
+  border-color: #444;
+  cursor: default;
+}
+#hud .warn { color: #f80; }
